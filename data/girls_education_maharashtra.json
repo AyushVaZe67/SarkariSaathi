@@ -1,0 +1,13 @@
+{
+  "scheme_id": "NSIGSE_001",
+  "scheme_name": "National Scheme of Incentive to Girls for Secondary Education (NSIGSE)",
+  "state": "All India",
+  "description": "The NSIGSE scheme is a centrally sponsored initiative launched in May 2008 to promote enrolment and retention of girl children from SC/ST communities in secondary education. The scheme provides incentive support to girls who have passed Class VIII and enrolled in Class IX in government, government-aided, or local body schools. The aim is to reduce dropout rates and encourage continued education until at least 18 years of age. The scheme is now implemented through the National Scholarship Portal (NSP).",
+  "benefits": "A fixed deposit of Rs. 3,000/- is made in the name of eligible unmarried girls upon enrolment in Class IX. The beneficiary is entitled to withdraw the amount with accrued interest upon reaching 18 years of age and passing the Class X examination. The amount is typically transferred directly into the bank account under DBT (Direct Benefit Transfer).",
+  "eligibility": "Girls belonging to Scheduled Caste (SC) or Scheduled Tribe (ST) communities who pass Class VIII and enrol in Class IX in State/UT government, government-aided, or local body schools. Girls who pass Class VIII from Kasturba Gandhi Balika Vidyalayas (KGBVs) are also eligible irrespective of caste. Applicants must be unmarried and typically below 16 years of age at the time of joining Class IX.",
+  "relaxation_priority": "The scheme primarily targets girl children from SC/ST communities and those from disadvantaged backgrounds. Girls from KGBVs are included irrespective of caste classification. Priority is given to reduce dropout rates and support continuation of education.",
+  "application_process": "Applicants must register and apply online through the National Scholarship Portal (NSP). After creating a profile and submitting the required information, applications are verified by state-level authorities. Once approved, the final list of beneficiaries is processed, and incentive funds are released via nominated banks through PFMS under the DBT system.",
+  "documents_required": "Aadhaar card (identity proof), school pass certificate (Class VIII), enrollment proof for Class IX, caste certificate (for SC/ST), proof of age, bank account details for DBT, and any other documents required by the NSP during application.",
+  "faqs": "Frequently asked questions include eligibility queries such as age limits, caste requirements, and whether permanent withdrawal before maturity is possible. Under NSIGSE, premature withdrawal before the age of 18 is generally not allowed. Detailed FAQs appear on the NSP portal.",
+  "source_url": "https://www.education.gov.in/en/incentives"
+}
