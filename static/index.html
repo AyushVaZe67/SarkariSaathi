@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SarkariSaathi - Government Schemes Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #34d399;
+            --secondary: #14b8a6;
+            --background: #f0fdf4;
+            --surface: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1fae5;
+            --shadow: rgba(16, 185, 129, 0.1);
+            --error: #ef4444;
+            --user-msg-bg: #ecfdf5;
+            --bot-msg-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--shadow);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            background: var(--background);
+            scroll-behavior: smooth;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .welcome-screen h2 {
+            font-size: 32px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .welcome-screen p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .sample-questions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .sample-question {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .sample-question:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .sample-question-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .sample-question-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
+        .message-content {
+            max-width: 70%;
+            background: var(--surface);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: var(--user-msg-bg);
+            border: 1px solid var(--border);
+        }
+
+        .message.bot .message-content {
+            background: var(--bot-msg-bg);
+            border: 1px solid #e5e7eb;
+        }
+
+        .message-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .message-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .message-btn:hover {
+            background: var(--background);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 16px 20px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 24px 32px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: var(--background);
+            padding: 12px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .input-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        #user-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+            padding: 8px;
+            font-family: inherit;
+        }
+
+        #user-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        #send-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        #send-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        #send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--text-primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--primary);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                height: 100vh;
+            }
+
+            .header {
+                padding: 16px 20px;
+            }
+
+            .header-title h1 {
+                font-size: 20px;
+            }
+
+            .header-title p {
+                font-size: 12px;
+            }
+
+            .logo {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .chat-container {
+                padding: 20px;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .sample-questions {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 50px;
+            }
+
+            .welcome-screen h2 {
+                font-size: 24px;
+            }
+
+            .welcome-screen p {
+                font-size: 16px;
+            }
+
+            .header-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+        }
+
+        /* Hide scrollbar for small screens */
+        @media (max-width: 480px) {
+            .header-actions {
+                gap: 8px;
+            }
+
+            .header-btn span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">🏛️</div>
+                <div class="header-title">
+                    <h1>SarkariSaathi</h1>
+                    <p>Your Government Schemes Assistant</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" id="download-btn" title="Download Chat">
+                    📥 <span>Download</span>
+                </button>
+                <button class="header-btn" id="clear-btn" title="Clear Chat">
+                    🗑️ <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="chat-container">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcome-screen">
+                <div class="welcome-icon">💬</div>
+                <h2>Welcome to SarkariSaathi!</h2>
+                <p>I'm here to help you with information about government schemes for girls' education in Maharashtra. Ask me anything!</p>
+                <div class="sample-questions">
+                    <div class="sample-question" data-question="What schemes are available for girls' education?">
+                        <div class="sample-question-title">📚 Education Schemes</div>
+                        <div class="sample-question-text">What schemes are available for girls' education?</div>
+                    </div>
+                    <div class="sample-question" data-question="What are the eligibility criteria for scholarships?">
+                        <div class="sample-question-title">✅ Eligibility</div>
+                        <div class="sample-question-text">What are the eligibility criteria for scholarships?</div>
+                    </div>
+                    <div class="sample-question" data-question="How do I apply for these schemes?">
+                        <div class="sample-question-title">📝 Application Process</div>
+                        <div class="sample-question-text">How do I apply for these schemes?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-container">
+                <input
+                    type="text"
+                    id="user-input"
+                    placeholder="Ask about government schemes..."
+                    autocomplete="off"
+                >
+                <button id="send-btn">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // State Management
+        let chatHistory = [];
+        let isProcessing = false;
+
+        // DOM Elements
+        const chatContainer = document.getElementById('chat-container');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            userInput.focus();
+
+            // Sample question click handlers
+            document.querySelectorAll('.sample-question').forEach(el => {
+                el.addEventListener('click', () => {
+                    const question = el.getAttribute('data-question');
+                    userInput.value = question;
+                    sendMessage();
+                });
+            });
+        });
+
+        // Event Listeners
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isProcessing) {
+                sendMessage();
+            }
+        });
+
+        clearBtn.addEventListener('click', clearChat);
+        downloadBtn.addEventListener('click', downloadChat);
+
+        // Send Message Function
+        async function sendMessage() {
+            const query = userInput.value.trim();
+
+            if (!query || isProcessing) return;
+
+            isProcessing = true;
+            sendBtn.disabled = true;
+
+            // Hide welcome screen
+            if (welcomeScreen) {
+                welcomeScreen.style.display = 'none';
+            }
+
+            // Clear input immediately
+            userInput.value = '';
+
+            // Add user message to UI
+            addMessageToUI('user', query);
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            try {
+                // Call API with current history (before adding new user message)
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        history: chatHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || 'Failed to get response');
+                }
+
+                const data = await response.json();
+
+                // Remove typing indicator
+                removeTypingIndicator();
+
+                // Add bot message to UI and history
+                addMessageToUI('bot', data.answer);
+
+                // Update chat history with user and bot messages
+                chatHistory.push({ role: 'user', content: query });
+                chatHistory.push({ role: 'assistant', content: data.answer });
+
+            } catch (error) {
+                console.error('Error:', error);
+                removeTypingIndicator();
+                addMessageToUI('bot', '❌ Sorry, I encountered an error. Please try again.\n\nError: ' + error.message);
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                isProcessing = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        // Add Message to UI (separate from history tracking)
+        function addMessageToUI(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = role === 'user' ? '👤' : '🤖';
+
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text';
+            messageText.textContent = content;
+
+            messageContent.appendChild(messageText);
+
+            // Add copy button for bot messages
+            if (role === 'bot') {
+                const actions = document.createElement('div');
+                actions.className = 'message-actions';
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'message-btn';
+                copyBtn.innerHTML = '📋 Copy';
+                copyBtn.onclick = () => copyMessage(content, copyBtn);
+
+                actions.appendChild(copyBtn);
+                messageContent.appendChild(actions);
+            }
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Typing Indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.style.background = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)';
+            avatar.textContent = '🤖';
+
+            const dots = document.createElement('div');
+            dots.className = 'typing-dots';
+            dots.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+
+            typingDiv.appendChild(avatar);
+            typingDiv.appendChild(dots);
+
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // Copy Message
+        function copyMessage(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '✅ Copied!';
+                showToast('Message copied to clipboard', 'success');
+
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast('Failed to copy message', 'error');
+            });
+        }
+
+        // Clear Chat
+        function clearChat() {
+            const messageCount = chatContainer.querySelectorAll('.message').length;
+
+            if (messageCount === 0 && !document.getElementById('welcome-screen')) {
+                showToast('Chat is already empty', 'error');
+                return;
+            }
+
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                // Clear history array
+                chatHistory = [];
+
+                // Clear container
+                chatContainer.innerHTML = '';
+
+                // Show welcome screen again
+                chatContainer.innerHTML = `
+                    <div class="welcome-screen" id="welcome-screen">
+                        <div class="welcome-icon">💬</div>
+                        <h2>Welcome to SarkariSaathi!</h2>
+                        <p>I'm here to help you with information about government schemes for girls' education in Maharashtra. Ask me anything!</p>
+                        <div class="sample-questions">
+                            <div class="sample-question" data-question="What schemes are available for girls' education?">
+                                <div class="sample-question-title">📚 Education Schemes</div>
+                                <div class="sample-question-text">What schemes are available for girls' education?</div>
+                            </div>
+                            <div class="sample-question" data-question="What are the eligibility criteria for scholarships?">
+                                <div class="sample-question-title">✅ Eligibility</div>
+                                <div class="sample-question-text">What are the eligibility criteria for scholarships?</div>
+                            </div>
+                            <div class="sample-question" data-question="How do I apply for these schemes?">
+                                <div class="sample-question-title">📝 Application Process</div>
+                                <div class="sample-question-text">How do I apply for these schemes?</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Re-attach event listeners for sample questions
+                document.querySelectorAll('.sample-question').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const question = el.getAttribute('data-question');
+                        userInput.value = question;
+                        sendMessage();
+                    });
+                });
+
+                showToast('Chat cleared successfully', 'success');
+            }
+        }
+
+        // Download Chat
+        function downloadChat() {
+            if (chatHistory.length === 0) {
+                showToast('No chat history to download', 'error');
+                return;
+            }
+
+            const chatText = chatHistory.map((msg, index) => {
+                const role = msg.role === 'user' ? 'You' : 'SarkariSaathi';
+                const timestamp = new Date().toLocaleString();
+                return `[${timestamp}] ${role}:\n${msg.content}\n`;
+            }).join('\n---\n\n');
+
+            const blob = new Blob([chatText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sarkari-saathi-chat-${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('Chat downloaded successfully', 'success');
+        }
+
+        // Show Toast Notification
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = `toast ${type} show`;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
