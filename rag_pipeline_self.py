@@ -18,27 +18,42 @@ with open("data/girls_education_maharashtra.json", "r", encoding="utf-8") as f:
 
 documents = []
 
+important_fields = [
+    "description",
+    "benefits",
+    "eligibility",
+    "application_process",
+    "documents_required",
+    "tenure",
+    "relaxation_priority",
+    "exclusions",
+    "faqs"
+]
+
 for item in data:
-    text = f"""
-    Scheme ID: {item.get("scheme_id", "")} 
-    Scheme Name: {item.get("scheme_name", "")}
-    State: {item.get("state", "")}
-    Ministry: {item.get("ministry", "")}
-    Description: {item.get("description", "")}
-    Benefits: {item.get("benefits", "")}
-    Eligibility: {item.get("eligibility", "")}
-    Relaxation / Priority: {item.get("relaxation_priority", "")}
-    Exclusions: {item.get("exclusions", "")}
-    Tenure: {item.get("tenure", "")}
-    Application Process: {item.get("application_process", "")}
-    Documents Required: {item.get("documents_required", "")}
-    FAQs: {item.get("faqs", "")}
-    Source URL: {item.get("source_url", "")}
-    """
+    scheme_name = item.get("scheme_name", "")
+    scheme_id = item.get("scheme_id", "")
+    state = item.get("state", "")
+    ministry = item.get("ministry", "")
 
-    documents.append(text.strip())
+    for field in important_fields:
+        content = item.get(field, "")
 
-# print(len(documents))
+        if content:
+            chunk = f"""
+            Scheme Name: {scheme_name}
+            Scheme ID: {scheme_id}
+            State: {state}
+            Ministry: {ministry}
+            Section: {field.upper()}
+
+            {content}
+            """
+
+            documents.append(chunk.strip())
+
+print(len(documents))
+print(documents[0])
 
 # ----------------------------
 # 2. Create Embeddings
@@ -73,41 +88,88 @@ client = Groq(api_key=groq_api_key)
 # ----------------------------
 # 5. Chat Loop
 # ----------------------------
+chat_history = []
+MAX_HISTORY = 6  # keep last 6 messages only
+
 while True:
     query = input("\nYou: ")
 
     if query.lower() in ["exit", "quit"]:
         break
 
-    # Embed query
-    query_embedding = embed_model.encode([query])
+    # ----------------------------
+    # 1. Build conversation context for better retrieval
+    # ----------------------------
+    previous_user_msgs = [
+        msg["content"] for msg in chat_history if msg["role"] == "user"
+    ]
+
+    conversation_context = " ".join(previous_user_msgs + [query])
+
+    # Embed conversation-aware query
+    query_embedding = embed_model.encode([conversation_context])
     query_embedding = np.array(query_embedding).astype("float32")
 
-    # Search top 3
-    D, I = index.search(query_embedding, k=3)
+    # ----------------------------
+    # 2. Retrieve Top Chunks
+    # ----------------------------
+    D, I = index.search(query_embedding, k=8)
 
     retrieved_docs = [documents[i] for i in I[0]]
     context = "\n\n".join(retrieved_docs)
 
-    # Create prompt
-    prompt = f"""
-    Answer the question using the context below.
+    # ----------------------------
+    # 3. Add current user query to memory
+    # ----------------------------
+    chat_history.append({"role": "user", "content": query})
 
-    Context:
-    {context}
+    # Keep memory limited
+    chat_history = chat_history[-MAX_HISTORY:]
 
-    Question:
-    {query}
+    # ----------------------------
+    # 4. Build Messages for LLM
+    # ----------------------------
+    messages = [
+        {
+            "role": "system",
+            "content": "You are SarkariSaathi, an expert AI assistant for government schemes. Use only the provided context."
+        }
+    ]
 
-    Answer clearly:
-    """
+    # Add chat memory
+    messages.extend(chat_history)
 
-    # Call Groq LLM
+    # Add RAG context as final instruction
+    messages.append({
+        "role": "user",
+        "content": f"""
+Use ONLY the information provided in the context below.
+Do NOT add information not present in the context.
+If answer is missing, say:
+"Information not available in the provided data."
+
+---------------------
+CONTEXT:
+{context}
+---------------------
+
+Answer clearly and concisely.
+"""
+    })
+
+    # ----------------------------
+    # 5. Call Groq LLM
+    # ----------------------------
     response = client.chat.completions.create(
-        model="llama3-8b-8192",   # or your preferred Groq model
-        messages=[{"role": "user", "content": prompt}],
+        model="llama-3.1-8b-instant",
+        messages=messages,
         temperature=0.2,
     )
 
     answer = response.choices[0].message.content
     print("\nBot:", answer)
+
+    # ----------------------------
+    # 6. Save assistant reply to memory
+    # ----------------------------
+    chat_history.append({"role": "assistant", "content": answer})
