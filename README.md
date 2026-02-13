@@ -2,7 +2,7 @@
 
 A complete RAG (Retrieval-Augmented Generation) pipeline for girls' education schemes in Maharashtra and India. This chatbot uses HuggingFace embeddings for vectorization and Groq LLM for intelligent responses.
 
-## ✨ Features
+## ✨ Features.   
 
 - **🔍 Semantic Search**: Uses sentence-transformers for accurate information retrieval
 - **💾 Persistent Storage**: Vector database saved to disk (no re-indexing needed)
